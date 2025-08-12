@@ -8,10 +8,16 @@
         "start": "node src/server.js"
     },
     "dependencies": {
+        "bcrypt": "^6.0.0",
+        "cookie-parser": "^1.4.7",
         "dotenv": "^17.2.1",
         "express": "^4.19.2",
         "express-handlebars": "^8.0.3",
+        "jsonwebtoken": "^9.0.2",
         "mongoose": "^8.17.1",
+        "nodemailer": "^7.0.5",
+        "passport": "^0.7.0",
+        "passport-jwt": "^4.0.1",
         "socket.io": "^4.8.1"
     }
 }

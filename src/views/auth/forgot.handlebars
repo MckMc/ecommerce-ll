@@ -1,0 +1,42 @@
+<h1>Recuperar contraseña</h1>
+<form id="f">
+  <label>Email <input name="email" type="email" required></label>
+  <button type="submit">Enviar enlace</button>
+</form>
+<p id="msg"></p>
+<p><a href="/login">Volver al login</a></p>
+
+<script>
+  const f = document.getElementById('f'); 
+  const msg = document.getElementById('msg');
+
+  f.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    msg.innerHTML = 'Enviando...';
+    const body = Object.fromEntries(new FormData(f).entries());
+    try{
+      const r = await fetch('/api/sessions/password/request', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(body)
+      });
+      const data = await r.json();
+
+      let html = 'Si el correo existe, llegará un enlace (expira en 1 hora).';
+
+      if (data && data.link) {
+        html += `<br><br><b>Enlace directo de restablecimiento:</b>
+                  <a href="${data.link}">${data.link}</a>`;
+      }
+      // URL de previsualización del correo
+      if (data && data.previewUrl) {
+        html += `<br><small>Vista del correo (Ethereal):
+                  <a href="${data.previewUrl}" target="_blank">Abrir</a></small>`;
+      }
+
+      msg.innerHTML = html;
+    }catch(err){
+      msg.textContent = 'Hubo un problema. Intentá otra vez.';
+    }
+  });
+</script>
+

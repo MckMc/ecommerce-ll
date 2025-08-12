@@ -1,0 +1,30 @@
+<h1>Restablecer contraseña</h1>
+<form id="f">
+  <input type="hidden" name="token" value="{{token}}">
+  <label>Nueva contraseña <input name="newPassword" type="password" required></label><br>
+  <label>Confirmar <input id="c" type="password" required></label><br>
+  <button type="submit">Cambiar contraseña</button>
+</form>
+<p id="msg"></p>
+<p><a href="/login">Ir a iniciar sesión</a></p>
+
+<script>
+  const f = document.getElementById('f'); const c = document.getElementById('c'); const msg = document.getElementById('msg');
+  f.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const fd = new FormData(f);
+    if(fd.get('newPassword') !== c.value){
+      msg.textContent = 'Las contraseñas no coinciden.'; return;
+    }
+    msg.textContent = 'Actualizando...';
+    try{
+      const r = await fetch('/api/sessions/password/reset', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ token: fd.get('token'), newPassword: fd.get('newPassword') })
+      });
+      const data = await r.json();
+      if(!r.ok) throw new Error(data.error || 'Token inválido o vencido');
+      msg.textContent = 'Contraseña actualizada. Ya podés iniciar sesión.';
+    }catch(err){ msg.textContent = err.message; }
+  });
+</script>

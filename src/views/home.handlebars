@@ -1,19 +1,5 @@
 <h1>Productos</h1>
 
-{{!-- form --}}
-<details style="margin:12px 0">
-  <summary><b>Crear producto</b></summary>
-  <form id="createProduct" style="margin-top:8px">
-    <input name="title" placeholder="title" required />
-    <input name="description" placeholder="description" required />
-    <input name="code" placeholder="code" required />
-    <input name="price" type="number" step="0.01" placeholder="price" required />
-    <input name="stock" type="number" placeholder="stock" required />
-    <input name="category" placeholder="category" required />
-    <button type="submit">Crear</button>
-  </form>
-</details>
-
 <ul>
   {{#each payload}}
     <li>
@@ -31,6 +17,15 @@
   {{#if hasNextPage}} <a href="{{nextLink}}">Siguiente »</a> {{/if}}
 </nav>
 
+<script>
+  const btn = document.getElementById('logoutBtn');
+  if(btn){
+    btn.addEventListener('click', async ()=>{
+      await fetch('/api/sessions/logout', { method:'POST' });
+      location.href = '/login';
+    });
+  }
+</script>
 <script>
 (async () => {
   let cartId = localStorage.getItem('cartId');

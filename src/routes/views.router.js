@@ -20,4 +20,12 @@ router.get('/carts/:cid', async (req, res) => {
     cartJson: JSON.stringify(cart.products)
   });
 });
+router.get('/login', (req,res)=> res.render('auth/login', { title:'Iniciar sesión' }));
+router.get('/register', (req,res)=> res.render('auth/register', { title:'Registrarse' }));
+router.get('/auth/forgot', (req,res)=> res.render('auth/forgot', { title:'Recuperar contraseña' }));
+router.get('/auth/reset', (req,res)=> {
+  const { token } = req.query;
+  if(!token) return res.status(400).send('Token requerido');
+  res.render('auth/reset', { title:'Restablecer contraseña', token });
+});
 export default router;
