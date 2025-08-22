@@ -1,5 +1,5 @@
 import { CartModel } from '../models/cart.schema.js';
-import { ProductModel } from '../models/product.schema.js';
+import Product from '../models/product.model.js';
 
 export async function createCart(){ return (await CartModel.create({ products: [] })).toObject(); }
 export async function getCart(cid) {
@@ -20,7 +20,7 @@ export async function removeProductFromCart(cid, pid){
 // rReemplazar
 export async function replaceCartProducts(cid, items){
     const ids = items.map(i=>i.product);
-    const existing = await ProductModel.find({ _id: { $in: ids }}).select('_id').lean();
+    const existing = await Product.find({ _id: { $in: ids }}).select('_id').lean();
     const valid = new Set(existing.map(e=>String(e._id)));
     const sanitized = items
     .filter(i=> valid.has(String(i.product)))

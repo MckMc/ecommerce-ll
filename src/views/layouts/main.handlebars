@@ -1,22 +1,30 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <title>{{title}}</title>
-    <link rel="stylesheet" href="/static/styles.css">
-    <link rel="stylesheet" href="/static/css/site.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <title>{{title}}</title>
+
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/products.css">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
+<body>
+
 <header class="topbar">
-    <nav class="nav">
-        <a class="nav__link" href="/products">Productos</a>
-        <a class="nav__link" href="/login">Login</a>
-        <a class="nav__link" href="/register">Registro</a>
-        <a class="nav__link" href="/auth/forgot">Olvidé mi contraseña</a>
-        <button id="logoutBtn" class="nav__btn">Salir</button>
-    </nav>
+  <nav class="nav">
+    <a href="/" class="nav-link{{#if (eq path "/")}} active{{/if}}">Home</a>
+    <a href="/products" class="nav-link{{#if (startsWith path "/products")}} active{{/if}}">Productos</a>
+    <a class="nav-link" href="/login">Login</a>
+    <a class="nav-link" href="/register">Registro</a>
+    <a class="nav-link" href="/auth/forgot">Olvidé mi contraseña</a>
+    <button id="logoutBtn" class="nav__btn">Salir</button>
+  </nav>
 </header>
 
-<body>
-    {{{body}}}
+<main>
+  {{{body}}}
+</main>
+
+</body>
 </html>

@@ -1,0 +1,22 @@
+<h1>Productos</h1>
+
+<div class="products-grid">
+  {{#each products}}
+    <a class="product-card" href="/products/{{this._id}}">
+      <div class="card-media">
+        <img src="{{this.image}}"
+          alt="{{this.title}}"
+          onerror="this.onerror=null;this.src='/img/products/fallback.jpg'">
+      </div>
+      <h3 class="card-title">{{this.title}}</h3>
+      <div class="card-price">${{this.price}}</div>
+    </a>
+  {{/each}}
+</div>
+
+
+<nav style="margin-top:16px">
+  {{#if hasPrevPage}} <a href="{{prevLink}}">« Anterior</a> {{/if}}
+  <span>Página {{page}} / {{totalPages}}</span>
+  {{#if hasNextPage}} <a href="{{nextLink}}">Siguiente »</a> {{/if}}
+</nav>

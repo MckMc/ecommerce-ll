@@ -1,4 +1,4 @@
-import { ProductModel } from '../models/product.schema.js';
+import Product from '../models/product.model.js';
 
 const SAMPLE_PRODUCTS = [
   {
@@ -6,10 +6,11 @@ const SAMPLE_PRODUCTS = [
     description: "Tabla softboard para principiantes.",
     code: "TS-001",
     price: 1200,
-    stock: 10,
+    stock: 11,
     category: "tablas",
     status: true,
-    thumbnails: ["ts_1.jpg"]
+    image: "/img/products/tabla.jpg",
+    thumbnails: []
   },
   {
     title: "Remera Thermoshield manga corta",
@@ -19,7 +20,8 @@ const SAMPLE_PRODUCTS = [
     stock: 8,
     category: "ropa",
     status: true,
-    thumbnails: ["re_1.jpg"]
+    image: "/img/products/remera.jpg",
+    thumbnails: []
   },
   {
     title: "Quilla FCS II Performer",
@@ -29,6 +31,7 @@ const SAMPLE_PRODUCTS = [
     stock: 25,
     category: "accesorios",
     status: true,
+    image: "/img/products/quilla.jpg",
     thumbnails: []
   },
   {
@@ -39,6 +42,7 @@ const SAMPLE_PRODUCTS = [
     stock: 40,
     category: "accesorios",
     status: true,
+    image: "/img/products/leash.jpg",
     thumbnails: []
   },
   {
@@ -49,14 +53,15 @@ const SAMPLE_PRODUCTS = [
     stock: 100,
     category: "accesorios",
     status: true,
+    image: "/img/products/parafina.jpg",
     thumbnails: []
   }
 ];
 
 export async function seedProductsIfEmpty() {
-  const count = await ProductModel.estimatedDocumentCount();
+  const count = await Product.estimatedDocumentCount();
   if (count > 0) return { seeded: false, count };
 
-  await ProductModel.insertMany(SAMPLE_PRODUCTS);
+  await Product.insertMany(SAMPLE_PRODUCTS);
   return { seeded: true, count: SAMPLE_PRODUCTS.length };
 }

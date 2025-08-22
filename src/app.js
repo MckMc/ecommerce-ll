@@ -16,23 +16,35 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
-initPassport;
-app.use(passport.initialize());
 
+app.use((req, res, next) => { res.locals.path = req.path; next(); });
 
 // Handlebars
 app.engine('handlebars', handlebars.engine({
-    helpers: { json: (ctx) => JSON.stringify(ctx) }
+  helpers: {
+    json: (ctx)=>JSON.stringify(ctx),
+    startsWith: (s,p)=> typeof s==='string' && s.startsWith(p),
+    eq: (a,b)=> a===b,
+    encode: (v)=> encodeURIComponent(v ?? '')
+  }
 }));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'handlebars');
+
+// Auth
+initPassport();
+app.use(passport.initialize());
+
+// Home
+app.get('/', (req, res) => res.render('home', { title: 'Home' }));
 
 // Routers
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/', viewsRouter);
 app.use('/api/sessions', sessionsRouter);
+
 
 export default app;

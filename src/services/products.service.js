@@ -1,32 +1,51 @@
-import crypto from 'crypto';
-import JsonRepo from '../repositories/json.repo.js';
-import { makeProduct } from '../models/product.model.js';
+import Product from "../models/product.model.js";
 
-const repo = new JsonRepo('products.json');
+const PROJECTION = "-__v";
 
-export async function listProducts(limit) {
-    const all = await repo.getAll();
-    return limit ? all.slice(0, Number(limit)) : all;
+export async function listProducts({ page = 1, limit = 10 } = {}) {
+  page = Number(page); limit = Number(limit);
+  const skip = (page - 1) * limit;
+
+  const [docs, total] = await Promise.all([
+    Product.find({}, PROJECTION).skip(skip).limit(limit).lean(),
+    Product.countDocuments(),
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+  return {
+    docs,
+    page,
+    totalPages,
+    hasPrevPage: page > 1,
+    hasNextPage: page < totalPages,
+    prevPage: page > 1 ? page - 1 : null,
+    nextPage: page < totalPages ? page + 1 : null,
+  };
 }
 
-export async function getProduct(pid) {
-    return repo.getById(pid);
+export function getProduct(pid) {
+  return Product.findById(pid, PROJECTION).lean();
 }
 
 export async function createProduct(data) {
-    const product = makeProduct({
-        ...data,
-        status: data.status ?? true,
-        id: crypto.randomUUID()
-    });
-    return repo.insert(product);
+  const payload = {
+    title: data.title?.trim(),
+    price: Number(data.price),
+    stock: Number(data.stock ?? 0),
+    image: data.image || null,
+    thumbnails: Array.isArray(data.thumbnails) ? data.thumbnails : [],
+  };
+  const doc = await Product.create(payload);
+  return doc.toObject ? doc.toObject() : doc;
 }
 
-export async function updateProduct(pid, patch) {
-    if ('id' in patch) delete patch.id;
-        return repo.updateById(pid, patch);
-    }
+export function updateProduct(pid, patch) {
+  delete patch.id; delete patch._id;
+  if ("price" in patch) patch.price = Number(patch.price);
+  if ("stock" in patch) patch.stock = Number(patch.stock);
+  return Product.findByIdAndUpdate(pid, patch, { new: true, projection: PROJECTION, lean: true });
+}
 
-export async function deleteProduct(pid) {
-    return repo.deleteById(pid);
+export function deleteProduct(pid) {
+  return Product.findByIdAndDelete(pid);
 }

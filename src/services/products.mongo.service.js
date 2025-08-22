@@ -1,4 +1,4 @@
-import { ProductModel } from '../models/product.schema.js';
+import Product from '../models/product.model.js';
 
 export async function listProductsMongo({ limit=10, page=1, sort, query }) {
   limit = Math.max(1, Number(limit) || 10);
@@ -17,8 +17,8 @@ export async function listProductsMongo({ limit=10, page=1, sort, query }) {
   else if (sort === 'desc') sortObj.price = -1;
 
   const [total, items] = await Promise.all([
-    ProductModel.countDocuments(filter),
-    ProductModel.find(filter)
+    Product.countDocuments(filter),
+    Product.find(filter)
       .sort(sortObj)
       .skip((page-1)*limit)
       .limit(limit)
@@ -46,10 +46,10 @@ export async function listProductsMongo({ limit=10, page=1, sort, query }) {
   };
 }
 
-export async function getProductById(id){ return ProductModel.findById(id).lean(); }
-export async function createProductMongo(data){ return (await ProductModel.create(data)).toObject(); }
+export async function getProductById(id){ return Product.findById(id).lean(); }
+export async function createProductMongo(data){ return (await Product.create(data)).toObject(); }
 export async function updateProductMongo(id, patch){
   delete patch.id; delete patch._id;
-  return ProductModel.findByIdAndUpdate(id, patch, { new: true, lean: true });
+  return Product.findByIdAndUpdate(id, patch, { new: true, lean: true });
 }
-export async function deleteProductMongo(id){ return ProductModel.findByIdAndDelete(id); }
+export async function deleteProductMongo(id){ return Product.findByIdAndDelete(id); }
